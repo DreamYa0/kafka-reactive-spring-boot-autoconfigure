@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.util.Assert;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -34,8 +35,9 @@ public class ReactiveKafkaReceiverContainer<K, V> implements SmartLifecycle {
     private Disposable subscribe;
 
     public ReactiveKafkaReceiverContainer(DefaultMessageComsumer<K, V> comsumer,
-                                          String[] topics,
-                                          String groupId) {
+                                          String groupId,
+                                          String... topics) {
+        Assert.noNullElements(topics, "consume topic is not null.");
         this.comsumer = comsumer;
         this.topics = topics;
         this.groupId = groupId;
