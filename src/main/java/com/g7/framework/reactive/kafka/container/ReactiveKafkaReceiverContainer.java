@@ -23,18 +23,18 @@ import java.util.Objects;
  * @date 2022/1/27 10:56 下午
  * @since 1.0.0
  */
-public class ReactiveKafkaReceiverContainer<K, V> implements SmartLifecycle {
+public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
 
     private static final Logger logger = LoggerFactory.getLogger(ReactiveKafkaReceiverContainer.class);
     private static final Scheduler SCHEDULER = Schedulers.boundedElastic();
-    private final DefaultMessageComsumer<K, V> comsumer;
+    private final DefaultMessageComsumer comsumer;
     private final String[] topics;
     @Autowired
     private KafkaProperties properties;
     private final String groupId;
     private Disposable subscribe;
 
-    public ReactiveKafkaReceiverContainer(DefaultMessageComsumer<K, V> comsumer,
+    public ReactiveKafkaReceiverContainer(DefaultMessageComsumer comsumer,
                                           String groupId,
                                           String... topics) {
         Assert.noNullElements(topics, "consume topic is not null.");
@@ -45,10 +45,10 @@ public class ReactiveKafkaReceiverContainer<K, V> implements SmartLifecycle {
 
     @Override
     public void start() {
-        final ReceiverOptionsBuilder<K, V> builder = new ReceiverOptionsBuilder<>(properties, topics,
+        final ReceiverOptionsBuilder<String, String> builder = new ReceiverOptionsBuilder<>(properties, topics,
                 groupId);
-        final ReceiverOptions<K, V> options = builder.build();
-        final KafkaReceiver<K, V> receiver = KafkaReceiver.create(options);
+        final ReceiverOptions<String, String> options = builder.build();
+        final KafkaReceiver<String, String> receiver = KafkaReceiver.create(options);
         subscribe = receiver.receive()
                 .doOnError(throwable ->
                         logger.error("connect kafka failed.", throwable))

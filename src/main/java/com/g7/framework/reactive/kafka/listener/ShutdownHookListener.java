@@ -10,11 +10,11 @@ import reactor.kafka.sender.KafkaSender;
  * @date 2018/12/23 2:12 PM
  * @since 1.0.0
  */
-public class ShutdownHookListener<K,V> implements ApplicationListener<ContextClosedEvent> {
+public class ShutdownHookListener implements ApplicationListener<ContextClosedEvent> {
 
-    private final KafkaSender<K, V> kafkaSender;
+    private final KafkaSender<String, String> kafkaSender;
 
-    public ShutdownHookListener(KafkaSender<K, V> kafkaSender) {
+    public ShutdownHookListener(KafkaSender<String, String> kafkaSender) {
         this.kafkaSender = kafkaSender;
     }
 

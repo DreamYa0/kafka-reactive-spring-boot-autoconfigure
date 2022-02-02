@@ -8,7 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
  * @date 2018/6/15 下午10:04
  * @since 1.0.0
  */
-public interface DefaultMessageComsumer<K, V> extends GenericMessageComsumer<ConsumerRecord<K, V>> {
+public interface DefaultMessageComsumer extends GenericMessageComsumer<ConsumerRecord<String, String>> {
 
 }
   

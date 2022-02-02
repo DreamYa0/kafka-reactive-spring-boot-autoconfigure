@@ -31,9 +31,9 @@ public class ReactiveKafkaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(value = KafkaSender.class)
-    public <K, V> KafkaSender<K, V> kafkaSender() {
+    public KafkaSender<String,String> kafkaSender() {
         Properties properties = buildProducerProperties();
-        final SenderOptions<K, V> options = SenderOptions.<K,V>create(properties)
+        final SenderOptions<String, String> options = SenderOptions.<String,String>create(properties)
                 .maxInFlight(1000)
                 .closeTimeout(Duration.ofSeconds(30))
                 .scheduler(Schedulers.boundedElastic());
@@ -42,8 +42,8 @@ public class ReactiveKafkaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(value = ShutdownHookListener.class)
-    public <K, V> ShutdownHookListener<K, V> shutdownHookListener(KafkaSender<K, V> kafkaSender) {
-        return new ShutdownHookListener<>(kafkaSender);
+    public ShutdownHookListener shutdownHookListener(KafkaSender<String, String> kafkaSender) {
+        return new ShutdownHookListener(kafkaSender);
     }
 
     private Properties buildProducerProperties() {
