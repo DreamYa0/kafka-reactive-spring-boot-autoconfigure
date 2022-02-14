@@ -67,15 +67,6 @@
             <name>artifactory</name>
             <url>http://repo.chinawayltd.com/artifactory/g7-public</url>
         </repository>
-        <repository>
-            <id>unidal.releases</id>
-            <url>http://unidal.org/nexus/content/repositories/releases/</url>
-        </repository>
-        <repository>
-            <id>maven_central</id>
-            <name>Maven Central</name>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
     </repositories>
 
     <distributionManagement>
@@ -114,7 +105,9 @@
                 <!-- 发布插件 -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.5</version>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
             </plugin>
             <plugin>
                 <!-- 打包插件 -->
