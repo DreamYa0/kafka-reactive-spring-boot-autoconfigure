@@ -1,5 +1,7 @@
 package com.g7.framework.reactive.kafka.listener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import reactor.kafka.sender.KafkaSender;
@@ -12,6 +14,7 @@ import reactor.kafka.sender.KafkaSender;
  */
 public class ShutdownHookListener implements ApplicationListener<ContextClosedEvent> {
 
+    private static final Logger logger = LoggerFactory.getLogger(ShutdownHookListener.class);
     private final KafkaSender<String, String> kafkaSender;
 
     public ShutdownHookListener(KafkaSender<String, String> kafkaSender) {
@@ -21,5 +24,6 @@ public class ShutdownHookListener implements ApplicationListener<ContextClosedEv
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         kafkaSender.close();
+        logger.debug("kafka sender close success.");
     }
 }

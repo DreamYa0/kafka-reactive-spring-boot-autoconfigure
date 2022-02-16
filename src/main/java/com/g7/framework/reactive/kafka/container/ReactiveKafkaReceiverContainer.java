@@ -71,6 +71,8 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
                             }
                         }))// 使用 concatMap 按顺序提交
                 .subscribe();
+        logger.debug("start reactive kafka consumer container monitor success topics is {} group is {}", topics,
+                groupId);
     }
 
     @Override
