@@ -9,7 +9,6 @@ import org.springframework.context.SmartLifecycle;
 import org.springframework.util.Assert;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
@@ -26,7 +25,6 @@ import java.util.Objects;
 public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
 
     private static final Logger logger = LoggerFactory.getLogger(ReactiveKafkaReceiverContainer.class);
-    private static final Scheduler SCHEDULER = Schedulers.boundedElastic();
     private final DefaultMessageComsumer comsumer;
     private final String[] topics;
     @Autowired
@@ -53,7 +51,7 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
                 .doOnError(throwable ->
                         logger.error("connect kafka failed.", throwable))
                 .groupBy(m -> m.receiverOffset().topicPartition())//按分区分组以保证排序
-                .flatMap(flux -> flux.publishOn(SCHEDULER)
+                .flatMap(flux -> flux.publishOn(Schedulers.boundedElastic())
                         .filter(Objects::nonNull)
                         .mapNotNull(record -> {
                             comsumer.record(record);
