@@ -30,7 +30,6 @@ public class ReactiveKafkaAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(value = KafkaSender.class)
     public KafkaSender<String,String> kafkaSender() {
         Properties properties = buildProducerProperties();
         final SenderOptions<String, String> options = SenderOptions.<String,String>create(properties)
