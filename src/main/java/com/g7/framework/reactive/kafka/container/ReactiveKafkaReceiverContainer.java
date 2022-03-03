@@ -1,6 +1,6 @@
 package com.g7.framework.reactive.kafka.container;
 
-import com.g7.framework.reactive.kafka.comsumer.DefaultMessageComsumer;
+import com.g7.framework.reactive.kafka.comsumer.AbstractMessageComsumer;
 import com.g7.framework.reactive.kafka.properties.KafkaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +25,14 @@ import java.util.Objects;
 public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
 
     private static final Logger logger = LoggerFactory.getLogger(ReactiveKafkaReceiverContainer.class);
-    private final DefaultMessageComsumer comsumer;
+    private final AbstractMessageComsumer comsumer;
     private final String[] topics;
     @Autowired
     private KafkaProperties properties;
     private final String groupId;
     private Disposable subscribe;
 
-    public ReactiveKafkaReceiverContainer(DefaultMessageComsumer comsumer,
+    public ReactiveKafkaReceiverContainer(AbstractMessageComsumer comsumer,
                                           String groupId,
                                           String... topics) {
         Assert.noNullElements(topics, "consume topic is not null.");
@@ -53,7 +53,7 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
                 .groupBy(m -> m.receiverOffset().topicPartition())//按分区分组以保证排序
                 .flatMap(flux -> flux.publishOn(Schedulers.boundedElastic())
                         .filter(Objects::nonNull)
-                        .flatMap(record -> comsumer.record(record)
+                        .flatMap(record -> comsumer.consume(record)
                                 .map(obj -> record.receiverOffset()))
                         .doOnError(throwable -> logger.error("consume message failed , " +
                                 "consumer name is {}", comsumer.getClass().getName(), throwable))
