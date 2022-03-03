@@ -53,11 +53,8 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
                 .groupBy(m -> m.receiverOffset().topicPartition())//按分区分组以保证排序
                 .flatMap(flux -> flux.publishOn(Schedulers.boundedElastic())
                         .filter(Objects::nonNull)
-                        .mapNotNull(record -> {
-                            comsumer.record(record);
-                            assert record != null;
-                            return record.receiverOffset();
-                        })
+                        .flatMap(record -> comsumer.record(record)
+                                .map(obj -> record.receiverOffset()))
                         .doOnError(throwable -> logger.error("consume message failed , " +
                                 "consumer name is {}", comsumer.getClass().getName(), throwable))
                         .sample(Duration.ofMillis(5000))//定期提交
