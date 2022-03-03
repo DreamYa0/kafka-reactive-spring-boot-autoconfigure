@@ -11,6 +11,6 @@ import reactor.core.publisher.Mono;
  */
 public interface AbstractMessageComsumer extends Comsumer<ConsumerRecord<String, String>> {
 
-    Mono<Object> consume(ConsumerRecord<String, String> record);
+    Mono<?> consume(ConsumerRecord<String, String> record);
 }
   
