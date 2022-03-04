@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import reactor.core.scheduler.Schedulers;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderOptions;
+import reactor.kafka.sender.internals.ProducerFactory;
 
 import java.time.Duration;
 import java.util.Properties;
@@ -24,9 +25,11 @@ import java.util.Properties;
 public class ReactiveKafkaAutoConfiguration {
 
     private final KafkaProperties properties;
+    private final ProducerFactory producerFactory;
 
-    public ReactiveKafkaAutoConfiguration(KafkaProperties properties) {
+    public ReactiveKafkaAutoConfiguration(KafkaProperties properties, ProducerFactory producerFactory) {
         this.properties = properties;
+        this.producerFactory = producerFactory;
     }
 
     @Bean
@@ -36,7 +39,7 @@ public class ReactiveKafkaAutoConfiguration {
                 .maxInFlight(1000)
                 .closeTimeout(Duration.ofSeconds(30))
                 .scheduler(Schedulers.boundedElastic());
-        return KafkaSender.create(options);
+        return KafkaSender.create(producerFactory, options);
     }
 
     @Bean

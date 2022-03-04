@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
+import reactor.kafka.receiver.internals.ConsumerFactory;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -29,6 +30,8 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
     private final String[] topics;
     @Autowired
     private KafkaProperties properties;
+    @Autowired
+    private ConsumerFactory consumerFactory;
     private final String groupId;
     private Disposable subscribe;
 
@@ -43,10 +46,10 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
 
     @Override
     public void start() {
-        final ReceiverOptionsBuilder<String, String> builder = new ReceiverOptionsBuilder<>(properties, topics,
-                groupId);
+        final ReceiverOptionsBuilder<String, String> builder = new ReceiverOptionsBuilder<>(properties,
+                topics, groupId);
         final ReceiverOptions<String, String> options = builder.build();
-        final KafkaReceiver<String, String> receiver = KafkaReceiver.create(options);
+        final KafkaReceiver<String, String> receiver = KafkaReceiver.create(consumerFactory, options);
         subscribe = receiver.receive()
                 .doOnError(throwable ->
                         logger.error("connect kafka failed.", throwable))
