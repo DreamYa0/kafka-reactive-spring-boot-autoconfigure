@@ -1,8 +1,10 @@
 package com.g7.framework.reactive.kafka;
 
 import com.g7.framework.reactive.kafka.listener.ShutdownHookListener;
+import com.g7.framework.reactive.kafka.producer.ReactiveKafkaTemplate;
 import com.g7.framework.reactive.kafka.properties.KafkaProperties;
 import com.g7.framework.reactive.kafka.util.ReadPropertiesUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +35,7 @@ public class ReactiveKafkaAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public KafkaSender<String,String> kafkaSender() {
         Properties properties = buildProducerProperties();
         final SenderOptions<String, String> options = SenderOptions.<String,String>create(properties)
@@ -40,6 +43,12 @@ public class ReactiveKafkaAutoConfiguration {
                 .closeTimeout(Duration.ofSeconds(30))
                 .scheduler(Schedulers.boundedElastic());
         return KafkaSender.create(producerFactory, options);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ReactiveKafkaTemplate reactiveKafkaTemplate(@Autowired KafkaSender<String, String> kafkaSender) {
+        return new ReactiveKafkaTemplate(kafkaSender);
     }
 
     @Bean
