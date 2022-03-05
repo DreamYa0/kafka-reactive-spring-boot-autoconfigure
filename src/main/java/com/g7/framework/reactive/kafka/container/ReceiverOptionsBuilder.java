@@ -52,12 +52,12 @@ public class ReceiverOptionsBuilder<K,V> {
 
     private void getConsumerDeserializer(Properties consumerDefaultProperties) {
         String keyDeserializer = properties.getConsumer().getKeyDeserializer();
-        if (Boolean.FALSE.equals(StringUtils.isEmpty(keyDeserializer))) {
+        if (StringUtils.hasText(keyDeserializer)) {
             consumerDefaultProperties.setProperty("key.deserializer", keyDeserializer);
         }
 
         String valueDeserializer = properties.getConsumer().getValueDeserializer();
-        if (Boolean.FALSE.equals(StringUtils.isEmpty(valueDeserializer))) {
+        if (StringUtils.hasText(valueDeserializer)) {
             consumerDefaultProperties.setProperty("value.deserializer", valueDeserializer);
         }
     }

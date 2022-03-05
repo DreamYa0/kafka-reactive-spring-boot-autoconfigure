@@ -63,12 +63,12 @@ public class ReactiveKafkaAutoConfiguration {
         defaultProducerProperties.setProperty("bootstrap.servers", properties.getBootstrap().getServers());
 
         String keySerializer = properties.getProducer().getKeySerializer();
-        if (Boolean.FALSE.equals(StringUtils.isEmpty(keySerializer))) {
+        if (StringUtils.hasText(keySerializer)) {
             defaultProducerProperties.setProperty("key.serializer", keySerializer);
         }
 
         String valueSerializer = properties.getProducer().getValueSerializer();
-        if (Boolean.FALSE.equals(StringUtils.isEmpty(valueSerializer))) {
+        if (StringUtils.hasText(valueSerializer)) {
             defaultProducerProperties.setProperty("value.serializer", valueSerializer);
         }
         return defaultProducerProperties;

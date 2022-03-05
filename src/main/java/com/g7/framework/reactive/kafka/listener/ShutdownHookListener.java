@@ -24,6 +24,8 @@ public class ShutdownHookListener implements ApplicationListener<ContextClosedEv
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         kafkaSender.close();
-        logger.debug("kafka sender close success.");
+        if (logger.isDebugEnabled()) {
+            logger.debug("kafka sender close success.");
+        }
     }
 }

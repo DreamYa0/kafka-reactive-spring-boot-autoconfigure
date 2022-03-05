@@ -72,7 +72,7 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
                                 .map(obj -> record.receiverOffset()))
                         .doOnError(throwable -> logger.error("consume message failed , " +
                                 "consumer name is {}", comsumer.getClass().getName(), throwable))
-                        .sample(Duration.ofMillis(5000))//定期提交
+                        .sample(Duration.ofMillis(1000))//定期提交
                         .concatMap(offset -> {
                             if (Objects.nonNull(offset)) {
                                 return offset.commit();
@@ -81,14 +81,18 @@ public class ReactiveKafkaReceiverContainer implements SmartLifecycle {
                             }
                         }))// 使用 concatMap 按顺序提交
                 .subscribe();
-        logger.debug("start reactive kafka consumer container monitor success topics is {} group is {}", topics,
-                groupId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("start reactive kafka consumer container monitor success topics is {} group is {}", topics,
+                    groupId);
+        }
     }
 
     @Override
     public void stop() {
         if (Objects.nonNull(subscribe) && Boolean.FALSE.equals(subscribe.isDisposed())) {
-            logger.info("Cancel or dispose the underlying task or resource.");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Cancel or dispose the underlying task or resource.");
+            }
             subscribe.dispose();
         }
     }
