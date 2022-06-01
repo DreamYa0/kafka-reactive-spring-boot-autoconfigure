@@ -5,6 +5,7 @@ import com.g7.framework.reactive.kafka.producer.ReactiveKafkaTemplate;
 import com.g7.framework.reactive.kafka.properties.KafkaProperties;
 import com.g7.framework.reactive.kafka.util.ReadPropertiesUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import java.util.Properties;
  * @date 2018/8/5 上午11:39
  * @since 1.0.0
  */
+@AutoConfiguration
 @EnableConfigurationProperties(KafkaProperties.class)
 public class ReactiveKafkaAutoConfiguration {
 
